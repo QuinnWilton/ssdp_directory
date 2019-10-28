@@ -1,18 +1,7 @@
 defmodule SSDPDirectory do
-  @moduledoc """
-  Documentation for SSDPDirectory.
-  """
+  alias SSDPDirectory.Cache
 
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> SSDPDirectory.hello()
-      :world
-
-  """
-  def hello do
-    :world
+  def list_services() do
+    Cache.contents()
   end
 end

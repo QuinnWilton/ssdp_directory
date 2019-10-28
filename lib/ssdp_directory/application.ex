@@ -7,8 +7,8 @@ defmodule SSDPDirectory.Application do
 
   def start(_type, _args) do
     children = [
-      # Starts a worker by calling: SSDPDirectory.Worker.start_link(arg)
-      # {SSDPDirectory.Worker, arg}
+      {SSDPDirectory.Cache, [name: SSDPDirectory.Cache]},
+      {SSDPDirectory.Listener, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
