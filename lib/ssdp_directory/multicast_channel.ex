@@ -1,4 +1,4 @@
-defmodule SSDPDirectory.Listener do
+defmodule SSDPDirectory.MulticastChannel do
   use GenServer
 
   alias SSDPDirectory.{
