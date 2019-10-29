@@ -1,6 +1,8 @@
 defmodule SSDPDirectory.Cache do
   use GenServer
 
+  require Logger
+
   alias __MODULE__
   alias SSDPDirectory.Service
 
@@ -33,17 +35,23 @@ defmodule SSDPDirectory.Cache do
   def handle_call({:insert, %Service{usn: usn} = service}, _from, data) when not is_nil(usn) do
     :ets.insert(data.table, {usn, service})
 
+    _ = Logger.debug(fn -> "Caching service: " <> inspect(usn) end)
+
     {:reply, :ok, data}
   end
 
   def handle_call({:delete, %Service{usn: usn}}, _from, data) when not is_nil(usn) do
     :ets.delete(data.table, usn)
 
+    _ = Logger.debug(fn -> "Evicting service: " <> inspect(usn) end)
+
     {:reply, :ok, data}
   end
 
   def handle_call(:flush, _from, data) do
     :ets.delete_all_objects(data.table)
+
+    _ = Logger.debug(fn -> "Flushing cache" end)
 
     {:reply, :ok, data}
   end
