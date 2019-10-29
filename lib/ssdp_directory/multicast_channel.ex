@@ -3,10 +3,7 @@ defmodule SSDPDirectory.MulticastChannel do
 
   require Logger
 
-  alias SSDPDirectory.{
-    HTTP,
-    NotifyRequest
-  }
+  alias SSDPDirectory.NotifyRequest
 
   def start_link(opts \\ []) do
     GenServer.start_link(__MODULE__, :ok, opts)
@@ -26,8 +23,8 @@ defmodule SSDPDirectory.MulticastChannel do
   end
 
   def handle_info({:udp, _socket, _ip, _port, data}, state) do
-    case HTTP.decode_start_line(data) do
-      {:ok, {{"NOTIFY", _target, _version}, rest}} ->
+    case :erlang.decode_packet(:http_bin, data, []) do
+      {:ok, {:http_request, "NOTIFY", _target, _version}, rest} ->
         case NotifyRequest.decode(rest) do
           {:ok, request} ->
             _ = Logger.debug(fn -> "Handling NOTIFY request: " <> inspect(request) end)
