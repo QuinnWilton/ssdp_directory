@@ -1,6 +1,8 @@
 defmodule SSDPDirectory.MulticastChannel do
   use GenServer
 
+  require Logger
+
   alias SSDPDirectory.{
     HTTP,
     NotifyRequest
@@ -28,9 +30,13 @@ defmodule SSDPDirectory.MulticastChannel do
       {:ok, {{"NOTIFY", _target, _version}, rest}} ->
         case NotifyRequest.decode(rest) do
           {:ok, request} ->
+            _ = Logger.debug(fn -> "Handling NOTIFY request: " <> inspect(request) end)
+
             :ok = NotifyRequest.handle(request)
 
           :error ->
+            _ = Logger.debug(fn -> "Failed to parse invalid NOTIFY request: " <> rest end)
+
             :ok
         end
 
