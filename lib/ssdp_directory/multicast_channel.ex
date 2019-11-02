@@ -43,11 +43,13 @@ defmodule SSDPDirectory.MulticastChannel do
   end
 
   def handle_info({:udp, _socket, _ip, _port, data}, state) do
-    with {:ok, packet, rest} <- :erlang.decode_packet(:http_bin, data, []),
-         {:ok, handler} <- packet_handler(packet),
-         {:ok, decoded} <- handler.decode(rest) do
-      :ok = handler.handle(decoded)
-    end
+    Task.Supervisor.start_child(SSDPDirectory.DecodingSupervisor, fn ->
+      with {:ok, packet, rest} <- :erlang.decode_packet(:http_bin, data, []),
+           {:ok, handler} <- packet_handler(packet),
+           {:ok, decoded} <- handler.decode(rest) do
+        :ok = handler.handle(decoded)
+      end
+    end)
 
     {:noreply, state}
   end

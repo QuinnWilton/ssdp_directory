@@ -5,6 +5,7 @@ defmodule SSDPDirectory.Application do
   def start(_type, _args) do
     children = [
       {SSDPDirectory.Cache, [name: SSDPDirectory.Cache]},
+      {Task.Supervisor, [strategy: :one_for_one, name: SSDPDirectory.DecodingSupervisor]},
       {SSDPDirectory.MulticastChannel, [name: SSDPDirectory.MulticastChannel]}
     ]
 
