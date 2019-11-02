@@ -56,41 +56,20 @@ defmodule SSDPDirectory.MulticastChannel do
   end
 
   def handle_info({:udp, _socket, _ip, _port, data}, state) do
-    case :erlang.decode_packet(:http_bin, data, []) do
-      {:ok, {:http_request, "NOTIFY", _target, _version}, rest} ->
-        case NotifyRequest.decode(rest) do
-          {:ok, request} ->
-            _ = Logger.debug(fn -> "Decoded NOTIFY request: " <> inspect(request) end)
-
-            :ok = NotifyRequest.handle(request)
-
-          :error ->
-            _ = Logger.debug(fn -> "Failed to decode NOTIFY request: " <> rest end)
-
-            :ok
-        end
-
-      {:ok, {:http_response, _version, 200, "OK"}, rest} ->
-        case SearchResponse.decode(rest) do
-          {:ok, response} ->
-            _ = Logger.debug(fn -> "Decoded M-SEARCH response: " <> inspect(response) end)
-
-            :ok = SearchResponse.handle(response)
-
-          :error ->
-            _ = Logger.debug(fn -> "Failed to decode M-SEARCH response: " <> rest end)
-
-            :ok
-        end
-
-      {:ok, {:http_request, "M-SEARCH", _target, _version}, _rest} ->
-        :ok
-
-      other ->
-        _ = Logger.debug(fn -> "Received unknown message: " <> inspect(other) end)
-        :ok
+    with {:ok, packet, rest} <- :erlang.decode_packet(:http_bin, data, []),
+         {:ok, handler} <- packet_handler(packet),
+         {:ok, decoded} <- handler.decode(rest) do
+      :ok = handler.handle(decoded)
     end
 
     {:noreply, state}
   end
+
+  defp packet_handler({:http_request, "NOTIFY", _target, _version}),
+    do: {:ok, NotifyRequest}
+
+  defp packet_handler({:http_response, _version, 200, "OK"}),
+    do: {:ok, SearchResponse}
+
+  defp packet_handler(_packet), do: :error
 end

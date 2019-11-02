@@ -1,4 +1,6 @@
 defmodule SSDPDirectory.SearchResponse do
+  require Logger
+
   alias __MODULE__
 
   alias SSDPDirectory.{
@@ -16,11 +18,15 @@ defmodule SSDPDirectory.SearchResponse do
         process_headers(headers)
 
       :error ->
+        _ = Logger.debug(fn -> "Failed to decode SEARCH response: " <> inspect(data) end)
+
         :error
     end
   end
 
   def handle(%SearchResponse{} = response) do
+    _ = Logger.debug(fn -> "Handling SEARCH response: " <> inspect(response) end)
+
     service = %Service{
       usn: response.usn,
       type: response.type,

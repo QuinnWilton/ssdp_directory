@@ -1,4 +1,6 @@
 defmodule SSDPDirectory.NotifyRequest.ByeBye do
+  require Logger
+
   alias __MODULE__
 
   alias SSDPDirectory.{
@@ -10,6 +12,8 @@ defmodule SSDPDirectory.NotifyRequest.ByeBye do
   defstruct @enforce_keys
 
   def handle(%ByeBye{} = command) do
+    _ = Logger.debug(fn -> "Handling ssdp:byebye request: " <> inspect(command) end)
+
     service = %Service{
       usn: command.usn,
       type: command.type

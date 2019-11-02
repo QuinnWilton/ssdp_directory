@@ -1,6 +1,7 @@
 defmodule SSDPDirectory.NotifyRequest do
-  alias __MODULE__
+  require Logger
 
+  alias __MODULE__
   alias SSDPDirectory.HTTP
 
   def decode(data) do
@@ -9,6 +10,8 @@ defmodule SSDPDirectory.NotifyRequest do
         process_headers(headers)
 
       :error ->
+        _ = Logger.debug(fn -> "Failed to decode NOTIFY request: " <> inspect(data) end)
+
         :error
     end
   end

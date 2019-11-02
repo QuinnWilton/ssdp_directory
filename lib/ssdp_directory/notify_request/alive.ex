@@ -1,4 +1,6 @@
 defmodule SSDPDirectory.NotifyRequest.Alive do
+  require Logger
+
   alias __MODULE__
 
   alias SSDPDirectory.{
@@ -10,6 +12,8 @@ defmodule SSDPDirectory.NotifyRequest.Alive do
   defstruct [:location] ++ @enforce_keys
 
   def handle(%Alive{} = command) do
+    _ = Logger.debug(fn -> "Handling ssdp:alive request: " <> inspect(command) end)
+
     service = %Service{
       usn: command.usn,
       type: command.type,
