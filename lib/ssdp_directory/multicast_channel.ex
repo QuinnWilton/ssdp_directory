@@ -15,10 +15,12 @@ defmodule SSDPDirectory.MulticastChannel do
     GenServer.start_link(__MODULE__, :ok, opts)
   end
 
+  @spec broadcast(GenServer.name(), iodata) :: :ok
   def broadcast(channel \\ MulticastChannel, packet) do
     GenServer.cast(channel, {:broadcast, packet})
   end
 
+  @spec init(:ok) :: {:ok, %{socket: port}}
   def init(:ok) do
     udp_options = [
       :binary,

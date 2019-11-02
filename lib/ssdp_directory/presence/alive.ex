@@ -11,6 +11,9 @@ defmodule SSDPDirectory.Presence.Alive do
   @enforce_keys [:usn, :type]
   defstruct [:location] ++ @enforce_keys
 
+  @type t :: %Alive{}
+
+  @spec handle(Alive.t()) :: :ok
   def handle(%Alive{} = command) do
     _ = Logger.debug(fn -> "Handling ssdp:alive request: " <> inspect(command) end)
 

@@ -4,6 +4,11 @@ defmodule SSDPDirectory.Presence do
   alias __MODULE__
   alias SSDPDirectory.HTTP
 
+  @type command :: Presence.Alive.t() | Presence.ByeBye.t()
+
+  @spec decode(binary) ::
+          :error
+          | {:ok, command}
   def decode(data) do
     case HTTP.decode_headers(data, []) do
       {:ok, headers, _rest} ->
@@ -16,6 +21,7 @@ defmodule SSDPDirectory.Presence do
     end
   end
 
+  @spec handle(command) :: :ok
   def handle(%Presence.Alive{} = command) do
     Presence.Alive.handle(command)
   end

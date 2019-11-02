@@ -11,6 +11,9 @@ defmodule SSDPDirectory.Presence.ByeBye do
   @enforce_keys [:usn, :type]
   defstruct @enforce_keys
 
+  @type t :: %ByeBye{}
+
+  @spec handle(ByeBye.t()) :: :ok
   def handle(%ByeBye{} = command) do
     _ = Logger.debug(fn -> "Handling ssdp:byebye request: " <> inspect(command) end)
 

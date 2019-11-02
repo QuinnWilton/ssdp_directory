@@ -12,6 +12,9 @@ defmodule SSDPDirectory.Discovery.Response do
   @enforce_keys [:usn, :type]
   defstruct [:location] ++ @enforce_keys
 
+  @type t :: %Response{}
+
+  @spec decode(binary) :: :error | {:ok, Response.t()}
   def decode(data) do
     case HTTP.decode_headers(data, []) do
       {:ok, headers, _rest} ->
@@ -24,6 +27,7 @@ defmodule SSDPDirectory.Discovery.Response do
     end
   end
 
+  @spec handle(Response.t()) :: :ok
   def handle(%Response{} = response) do
     _ = Logger.debug(fn -> "Handling SEARCH response: " <> inspect(response) end)
 
