@@ -12,6 +12,7 @@ defmodule SSDPDirectory.Cache do
 
   def contents(cache \\ Cache) do
     :ets.tab2list(cache)
+    |> Enum.into(%{})
   end
 
   def insert(cache \\ Cache, %Service{} = service) do
