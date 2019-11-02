@@ -1,4 +1,4 @@
-defmodule SSDPDirectory.NotifyRequest.ByeBye do
+defmodule SSDPDirectory.Presence.ByeBye do
   require Logger
 
   alias __MODULE__

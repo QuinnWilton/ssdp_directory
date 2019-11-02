@@ -1,4 +1,4 @@
-defmodule SSDPDirectory.SearchRequest do
+defmodule SSDPDirectory.Discovery.Request do
   def encode(service_type) when is_binary(service_type) do
     headers = [
       {"host", "239.255.255.250:1900"},

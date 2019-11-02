@@ -1,4 +1,4 @@
-defmodule SSDPDirectory.NotifyRequest do
+defmodule SSDPDirectory.Presence do
   require Logger
 
   alias __MODULE__
@@ -16,12 +16,12 @@ defmodule SSDPDirectory.NotifyRequest do
     end
   end
 
-  def handle(%NotifyRequest.Alive{} = command) do
-    NotifyRequest.Alive.handle(command)
+  def handle(%Presence.Alive{} = command) do
+    Presence.Alive.handle(command)
   end
 
-  def handle(%NotifyRequest.ByeBye{} = command) do
-    NotifyRequest.ByeBye.handle(command)
+  def handle(%Presence.ByeBye{} = command) do
+    Presence.ByeBye.handle(command)
   end
 
   defp process_headers(headers) do
@@ -33,7 +33,7 @@ defmodule SSDPDirectory.NotifyRequest do
       %{command: "ssdp:alive", usn: usn, type: type}
       when not is_nil(usn) and not is_nil(type) ->
         {:ok,
-         %NotifyRequest.Alive{
+         %Presence.Alive{
            usn: usn,
            type: type,
            location: Map.get(args, :location)
@@ -42,7 +42,7 @@ defmodule SSDPDirectory.NotifyRequest do
       %{command: "ssdp:byebye", usn: usn, type: type}
       when not is_nil(usn) and not is_nil(type) ->
         {:ok,
-         %NotifyRequest.ByeBye{
+         %Presence.ByeBye{
            usn: usn,
            type: type
          }}

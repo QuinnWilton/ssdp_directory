@@ -1,4 +1,4 @@
-defmodule SSDPDirectory.NotifyRequest.Alive do
+defmodule SSDPDirectory.Presence.Alive do
   require Logger
 
   alias __MODULE__

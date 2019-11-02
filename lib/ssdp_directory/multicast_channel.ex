@@ -1,14 +1,11 @@
 defmodule SSDPDirectory.MulticastChannel do
   use GenServer
 
-  require Logger
-
   alias __MODULE__
 
   alias SSDPDirectory.{
-    NotifyRequest,
-    SearchRequest,
-    SearchResponse
+    Discovery,
+    Presence
   }
 
   @multicast_group {239, 255, 255, 250}
@@ -18,8 +15,8 @@ defmodule SSDPDirectory.MulticastChannel do
     GenServer.start_link(__MODULE__, :ok, opts)
   end
 
-  def discover(channel \\ MulticastChannel, service_type) when is_binary(service_type) do
-    GenServer.cast(channel, {:discover, service_type})
+  def broadcast(channel \\ MulticastChannel, packet) do
+    GenServer.cast(channel, {:broadcast, packet})
   end
 
   def init(:ok) do
@@ -37,20 +34,8 @@ defmodule SSDPDirectory.MulticastChannel do
     {:ok, %{socket: socket}}
   end
 
-  def handle_cast({:discover, service_type}, state) when is_binary(service_type) do
-    packet = SearchRequest.encode(service_type)
-
-    case :gen_udp.send(state.socket, @multicast_group, @multicast_port, packet) do
-      :ok ->
-        _ = Logger.debug(fn -> "Sent search request for: " <> service_type end)
-
-      {:error, reason} ->
-        _ =
-          Logger.debug(fn ->
-            "Failed to send search request for: " <>
-              service_type <> ", due to reason: " <> inspect(reason)
-          end)
-    end
+  def handle_cast({:broadcast, packet}, state) do
+    :ok = :gen_udp.send(state.socket, @multicast_group, @multicast_port, packet)
 
     {:noreply, state}
   end
@@ -66,10 +51,10 @@ defmodule SSDPDirectory.MulticastChannel do
   end
 
   defp packet_handler({:http_request, "NOTIFY", _target, _version}),
-    do: {:ok, NotifyRequest}
+    do: {:ok, Presence}
 
   defp packet_handler({:http_response, _version, 200, "OK"}),
-    do: {:ok, SearchResponse}
+    do: {:ok, Discovery.Response}
 
   defp packet_handler(_packet), do: :error
 end

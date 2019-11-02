@@ -1,4 +1,4 @@
-defmodule SSDPDirectory.SearchResponse do
+defmodule SSDPDirectory.Discovery.Response do
   require Logger
 
   alias __MODULE__
@@ -24,7 +24,7 @@ defmodule SSDPDirectory.SearchResponse do
     end
   end
 
-  def handle(%SearchResponse{} = response) do
+  def handle(%Response{} = response) do
     _ = Logger.debug(fn -> "Handling SEARCH response: " <> inspect(response) end)
 
     service = %Service{
@@ -44,7 +44,7 @@ defmodule SSDPDirectory.SearchResponse do
     case args do
       %{usn: usn, type: type} when not is_nil(usn) and not is_nil(type) ->
         {:ok,
-         %SearchResponse{
+         %Response{
            usn: usn,
            type: type,
            location: Map.get(args, :location)

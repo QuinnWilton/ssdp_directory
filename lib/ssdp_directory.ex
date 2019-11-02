@@ -1,11 +1,11 @@
 defmodule SSDPDirectory do
   alias SSDPDirectory.{
     Cache,
-    MulticastChannel
+    Discovery
   }
 
   def discover_services(service_type \\ "ssdp:all") do
-    MulticastChannel.discover(service_type)
+    Discovery.discover_services(service_type)
   end
 
   def list_services() do
