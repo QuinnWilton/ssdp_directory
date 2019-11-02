@@ -35,7 +35,7 @@ defmodule SSDPDirectory.Cache do
   def handle_call({:insert, %Service{usn: usn} = service}, _from, data) when not is_nil(usn) do
     :ets.insert(data.table, {usn, service})
 
-    _ = Logger.debug(fn -> "Caching service: " <> inspect(usn) end)
+    _ = Logger.debug(fn -> "Cached service: " <> inspect(usn) end)
 
     {:reply, :ok, data}
   end
@@ -43,7 +43,7 @@ defmodule SSDPDirectory.Cache do
   def handle_call({:delete, %Service{usn: usn}}, _from, data) when not is_nil(usn) do
     :ets.delete(data.table, usn)
 
-    _ = Logger.debug(fn -> "Evicting service: " <> inspect(usn) end)
+    _ = Logger.debug(fn -> "Evicted service: " <> inspect(usn) end)
 
     {:reply, :ok, data}
   end
@@ -51,7 +51,7 @@ defmodule SSDPDirectory.Cache do
   def handle_call(:flush, _from, data) do
     :ets.delete_all_objects(data.table)
 
-    _ = Logger.debug(fn -> "Flushing cache" end)
+    _ = Logger.debug(fn -> "Flushed cache" end)
 
     {:reply, :ok, data}
   end

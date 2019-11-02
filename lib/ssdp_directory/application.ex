@@ -8,7 +8,7 @@ defmodule SSDPDirectory.Application do
   def start(_type, _args) do
     children = [
       {SSDPDirectory.Cache, [name: SSDPDirectory.Cache]},
-      {SSDPDirectory.MulticastChannel, []}
+      {SSDPDirectory.MulticastChannel, [name: SSDPDirectory.MulticastChannel]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
