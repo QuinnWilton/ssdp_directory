@@ -1,21 +1,23 @@
 # SSDPDirectory
 
-**TODO: Add description**
+A fairly straightforward toy implementation of an SSDP Directory. When started, it listens for SSDP presence notifications, and stores those services in an ETS table.
 
-## Installation
+## Usage
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `ssdp_directory` to your list of dependencies in `mix.exs`:
+Discover all services:
 
 ```elixir
-def deps do
-  [
-    {:ssdp_directory, "~> 0.1.0"}
-  ]
-end
+SSDPDirectory.discover_services()
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/ssdp_directory](https://hexdocs.pm/ssdp_directory).
+List all known services:
 
+```elixir
+SSDPDirectory.list_services()
+```
+
+It's pretty simple.
+
+## Caveats
+
+The ETS table does not have any eviction strategy. It will grow indefinitely unless you clear it with: `SSDPDirectory.Cache.flush()`
